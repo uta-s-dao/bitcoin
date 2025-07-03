@@ -1,1 +1,19 @@
 2025/06/29 18:23:09 main.go:12: test
+2025/07/03 14:05:07 bitflyer.go:56: action=dorequest endpoint=https://api.bitflyer.com.v1/me/getbalance
+2025/07/03 14:05:07 bitflyer.go:32: 1751519107
+2025/07/03 14:05:07 bitflyer.go:92: action=GetBalance error=Get "https://api.bitflyer.com.v1/me/getbalance": dial tcp: lookup api.bitflyer.com.v1 on 10.255.255.254:53: no such host
+2025/07/03 18:34:16 bitflyer.go:57: action=dorequest endpoint=https://api.bitflyer.com.v1/me/getbalance
+2025/07/03 18:34:16 bitflyer.go:33: 1751535256
+2025/07/03 18:34:16 bitflyer.go:93: action=GetBalance error=Get "https://api.bitflyer.com.v1/me/getbalance": dial tcp: lookup api.bitflyer.com.v1 on 10.255.255.254:53: no such host
+2025/07/03 18:44:44 bitflyer.go:57: action=dorequest endpoint=https://api.bitflyer.com/v1/me/getbalance
+2025/07/03 18:44:44 bitflyer.go:33: 1751535884
+2025/07/03 18:44:44 bitflyer.go:93: action=GetBalance error=Get "https://api.bitflyer.com/v1/me/getbalance": read tcp 172.28.129.118:55060->23.47.137.243:443: read: connection reset by peer
+2025/07/03 19:09:09 bitflyer.go:56: action=dorequest endpoint=https://api.bitflyer./me/getbalance
+2025/07/03 19:09:09 bitflyer.go:32: 1751537349
+2025/07/03 19:09:09 bitflyer.go:92: action=GetBalance error=Get "https://api.bitflyer./me/getbalance": dial tcp: lookup api.bitflyer. on 10.255.255.254:53: no such host
+2025/07/03 19:09:49 bitflyer.go:56: action=dorequest endpoint=https://api.bitflyer/me/getbalance
+2025/07/03 19:09:49 bitflyer.go:32: 1751537389
+2025/07/03 19:09:49 bitflyer.go:92: action=GetBalance error=Get "https://api.bitflyer/me/getbalance": dial tcp: lookup api.bitflyer on 10.255.255.254:53: no such host
+2025/07/03 19:12:58 bitflyer.go:56: action=dorequest endpoint=https://api.bitflyer/me/getbalance
+2025/07/03 19:12:58 bitflyer.go:32: 1751537578
+2025/07/03 19:12:58 bitflyer.go:92: action=GetBalance error=Get "https://api.bitflyer/me/getbalance": dial tcp: lookup api.bitflyer on 10.255.255.254:53: no such host
