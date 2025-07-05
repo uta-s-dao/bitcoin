@@ -17,3 +17,11 @@
 2025/07/03 19:12:58 bitflyer.go:56: action=dorequest endpoint=https://api.bitflyer/me/getbalance
 2025/07/03 19:12:58 bitflyer.go:32: 1751537578
 2025/07/03 19:12:58 bitflyer.go:92: action=GetBalance error=Get "https://api.bitflyer/me/getbalance": dial tcp: lookup api.bitflyer on 10.255.255.254:53: no such host
+2025/07/05 16:00:55 bitflyer.go:56: action=dorequest endpoint=https://api.bitflyer/v1/ticker
+2025/07/05 16:00:55 bitflyer.go:32: 1751698855
+2025/07/05 16:06:41 bitflyer.go:56: action=dorequest endpoint=https://api.bitflyer/v1/ticker
+2025/07/05 16:06:41 bitflyer.go:32: 1751699201
+2025/07/05 16:08:51 bitflyer.go:55: action=dorequest endpoint=https://api.bitflyer.com/v1/ticker
+2025/07/05 16:08:51 bitflyer.go:31: 1751699331
+2025/07/05 16:09:21 bitflyer.go:55: action=dorequest endpoint=https://api.bitflyer.com/v1/ticker
+2025/07/05 16:09:21 bitflyer.go:31: 1751699361
