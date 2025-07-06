@@ -1,28 +1,21 @@
-2025/06/29 18:23:09 main.go:12: test
-2025/07/03 14:05:07 bitflyer.go:56: action=dorequest endpoint=https://api.bitflyer.com.v1/me/getbalance
-2025/07/03 14:05:07 bitflyer.go:32: 1751519107
-2025/07/03 14:05:07 bitflyer.go:92: action=GetBalance error=Get "https://api.bitflyer.com.v1/me/getbalance": dial tcp: lookup api.bitflyer.com.v1 on 10.255.255.254:53: no such host
-2025/07/03 18:34:16 bitflyer.go:57: action=dorequest endpoint=https://api.bitflyer.com.v1/me/getbalance
-2025/07/03 18:34:16 bitflyer.go:33: 1751535256
-2025/07/03 18:34:16 bitflyer.go:93: action=GetBalance error=Get "https://api.bitflyer.com.v1/me/getbalance": dial tcp: lookup api.bitflyer.com.v1 on 10.255.255.254:53: no such host
-2025/07/03 18:44:44 bitflyer.go:57: action=dorequest endpoint=https://api.bitflyer.com/v1/me/getbalance
-2025/07/03 18:44:44 bitflyer.go:33: 1751535884
-2025/07/03 18:44:44 bitflyer.go:93: action=GetBalance error=Get "https://api.bitflyer.com/v1/me/getbalance": read tcp 172.28.129.118:55060->23.47.137.243:443: read: connection reset by peer
-2025/07/03 19:09:09 bitflyer.go:56: action=dorequest endpoint=https://api.bitflyer./me/getbalance
-2025/07/03 19:09:09 bitflyer.go:32: 1751537349
-2025/07/03 19:09:09 bitflyer.go:92: action=GetBalance error=Get "https://api.bitflyer./me/getbalance": dial tcp: lookup api.bitflyer. on 10.255.255.254:53: no such host
-2025/07/03 19:09:49 bitflyer.go:56: action=dorequest endpoint=https://api.bitflyer/me/getbalance
-2025/07/03 19:09:49 bitflyer.go:32: 1751537389
-2025/07/03 19:09:49 bitflyer.go:92: action=GetBalance error=Get "https://api.bitflyer/me/getbalance": dial tcp: lookup api.bitflyer on 10.255.255.254:53: no such host
-2025/07/03 19:12:58 bitflyer.go:56: action=dorequest endpoint=https://api.bitflyer/me/getbalance
-2025/07/03 19:12:58 bitflyer.go:32: 1751537578
-2025/07/03 19:12:58 bitflyer.go:92: action=GetBalance error=Get "https://api.bitflyer/me/getbalance": dial tcp: lookup api.bitflyer on 10.255.255.254:53: no such host
-2025/07/05 16:00:55 bitflyer.go:56: action=dorequest endpoint=https://api.bitflyer/v1/ticker
-2025/07/05 16:00:55 bitflyer.go:32: 1751698855
-2025/07/05 16:06:41 bitflyer.go:56: action=dorequest endpoint=https://api.bitflyer/v1/ticker
-2025/07/05 16:06:41 bitflyer.go:32: 1751699201
-2025/07/05 16:08:51 bitflyer.go:55: action=dorequest endpoint=https://api.bitflyer.com/v1/ticker
-2025/07/05 16:08:51 bitflyer.go:31: 1751699331
-2025/07/05 16:09:21 bitflyer.go:55: action=dorequest endpoint=https://api.bitflyer.com/v1/ticker
-2025/07/05 16:09:21 bitflyer.go:31: 1751699361
-2025/07/05 16:49:44 bitflyer.go:216: connecting to wss://ws.lightstream.bitflyer.com/json-rpc
+2025/07/06 14:09:50 bitflyer.go:217: connecting to wss://ws.lightstream.bitflyer.com/json-rpc
+2025/07/06 15:16:08 bitflyer.go:217: connecting to wss://ws.lightstream.bitflyer.com/json-rpc
+2025/07/06 15:16:09 streamdata.go:15: action=StreamIngestionData, {BTC_JPY RUNNING 2025-07-06T06:16:08.3445835Z 6019599 1.5640276e+07 1.564253e+07 0.0108682 0.01704725 431.12970868 242.38649362 0 0 1.564253e+07 138.49038061 138.49038061}
+2025/07/06 15:16:09 streamdata.go:15: action=StreamIngestionData, {BTC_JPY RUNNING 2025-07-06T06:16:08.899837Z 6019616 1.564028e+07 1.564253e+07 0.23 0.01704725 431.21976682 242.38649362 0 0 1.564253e+07 138.49038061 138.49038061}
+2025/07/06 15:16:10 streamdata.go:15: action=StreamIngestionData, {BTC_JPY RUNNING 2025-07-06T06:16:09.3756054Z 6019628 1.5640296e+07 1.564253e+07 0.0108682 0.01704725 431.28113411 242.37649362 0 0 1.564253e+07 138.49038061 138.49038061}
+2025/07/06 15:16:10 streamdata.go:15: action=StreamIngestionData, {BTC_JPY RUNNING 2025-07-06T06:16:09.8836021Z 6019639 1.5640297e+07 1.564253e+07 0.05730565 0.01704725 430.78741433 242.37649362 0 0 1.564253e+07 138.49038061 138.49038061}
+2025/07/06 15:16:11 streamdata.go:15: action=StreamIngestionData, {BTC_JPY RUNNING 2025-07-06T06:16:10.5395232Z 6019654 1.56403e+07 1.564253e+07 0.02 0.0020246 431.42088431 242.36147097 0 0 1.564253e+07 138.50540326 138.50540326}
+2025/07/06 15:16:11 streamdata.go:15: action=StreamIngestionData, {BTC_JPY RUNNING 2025-07-06T06:16:11.0339357Z 6019672 1.5640314e+07 1.564253e+07 0.091949 0.0020246 431.12055269 242.36147097 0 0 1.564253e+07 138.50540326 138.50540326}
+2025/07/06 15:16:12 streamdata.go:15: action=StreamIngestionData, {BTC_JPY RUNNING 2025-07-06T06:16:11.5175859Z 6019687 1.5640316e+07 1.564253e+07 0.09090685 0.0020246 431.28086267 242.36147097 0 0 1.564253e+07 138.50540326 138.50540326}
+2025/07/06 15:16:12 streamdata.go:15: action=StreamIngestionData, {BTC_JPY RUNNING 2025-07-06T06:16:12.0986309Z 6019701 1.564032e+07 1.564253e+07 0.04404487 0.0020246 431.28128962 242.36147097 0 0 1.564253e+07 138.50540326 138.50540326}
+2025/07/06 15:16:13 streamdata.go:15: action=StreamIngestionData, {BTC_JPY RUNNING 2025-07-06T06:16:12.669774Z 6019726 1.5640323e+07 1.5647314e+07 0.03419353 0.0060729 429.08092902 242.34446927 0 0 1.5647314e+07 138.52240496 138.52240496}
+2025/07/06 15:16:14 streamdata.go:15: action=StreamIngestionData, {BTC_JPY RUNNING 2025-07-06T06:16:13.1990552Z 6019741 1.5640325e+07 1.5647314e+07 0.05730565 0.0060729 431.48139327 238.14746927 0 0 1.5647314e+07 138.52240496 138.52240496}
+2025/07/06 15:16:14 streamdata.go:15: action=StreamIngestionData, {BTC_JPY RUNNING 2025-07-06T06:16:13.7494931Z 6019769 1.564048e+07 1.5647314e+07 0.036932 0.0260729 431.44225667 242.53439967 0 0 1.5647314e+07 138.52240496 138.52240496}
+2025/07/06 15:16:15 streamdata.go:15: action=StreamIngestionData, {BTC_JPY RUNNING 2025-07-06T06:16:14.2163223Z 6019781 1.5640484e+07 1.5647314e+07 0.09101469 0.0260729 431.60596571 242.57269967 0 0 1.5647314e+07 138.52240496 138.52240496}
+2025/07/06 15:16:15 streamdata.go:15: action=StreamIngestionData, {BTC_JPY RUNNING 2025-07-06T06:16:14.7778576Z 6019795 1.5640487e+07 1.5647314e+07 0.03400809 0.0260729 431.56537984 242.56269967 0 0 1.5647314e+07 138.52240496 138.52240496}
+2025/07/06 15:16:16 streamdata.go:15: action=StreamIngestionData, {BTC_JPY RUNNING 2025-07-06T06:16:15.4180212Z 6019811 1.564049e+07 1.5647314e+07 0.03399645 0.0260729 431.70898091 242.56269967 0 0 1.5647314e+07 138.52240496 138.52240496}
+2025/07/06 15:16:17 streamdata.go:15: action=StreamIngestionData, {BTC_JPY RUNNING 2025-07-06T06:16:15.9686468Z 6019826 1.5640494e+07 1.5647314e+07 0.09082296 0.0260729 431.73491278 242.56269967 0 0 1.5647314e+07 138.52240496 138.52240496}
+2025/07/06 15:16:17 streamdata.go:15: action=StreamIngestionData, {BTC_JPY RUNNING 2025-07-06T06:16:16.5415796Z 6019872 1.5640651e+07 1.5647314e+07 0.036932 0.0260729 431.53225657 242.52272057 0 0 1.5647314e+07 138.52240496 138.52240496}
+2025/07/06 15:16:18 streamdata.go:15: action=StreamIngestionData, {BTC_JPY RUNNING 2025-07-06T06:16:17.2589093Z 6019893 1.5640656e+07 1.5647314e+07 0.09010601 0.0260729 431.56505693 242.52272057 0 0 1.5647314e+07 138.52240496 138.52240496}
+2025/07/06 15:16:18 streamdata.go:15: action=StreamIngestionData, {BTC_JPY RUNNING 2025-07-06T06:16:17.7988368Z 6019912 1.5640661e+07 1.5647314e+07 0.02 0.0260729 431.41957874 242.52272057 0 0 1.5647314e+07 138.52240496 138.52240496}
+2025/07/06 15:16:19 streamdata.go:15: action=StreamIngestionData, {BTC_JPY RUNNING 2025-07-06T06:16:18.3014823Z 6019933 1.5640673e+07 1.5647314e+07 0.010868 0.0260729 431.68996608 242.52278307 0 0 1.5647314e+07 138.52240496 138.52240496}
