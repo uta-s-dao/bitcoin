@@ -47,7 +47,7 @@ func init() {
 			open FLOAT,
 			close FLOAT,
 			high FLOAT,
-			low  open FLOAT,
+			low  FLOAT,
 			volume FLOAT)`, tableName)
 		DbConnection.Exec(c)
 	}
