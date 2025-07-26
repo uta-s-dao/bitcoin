@@ -11,8 +11,11 @@ func StreamIngestionData() {
 	var tickerChannl = make(chan bitflyer.Ticker)
 	apiClient := bitflyer.New(config.Config.ApiKey, config.Config.ApiSecret)
 	go apiClient.GetRealTimeTicker(config.Config.ProductCode, tickerChannl)
+	//取得されたデータがtickerChannlにわたってくる
+
 	go func() {
 		for ticker := range tickerChannl {
+			//tickerChannlからTickerデータを継続的に受信
 			log.Printf("action=StreamIngestionData, %v", ticker)
 			for _, duration := range config.Config.Durations {
 				isCreated := models.CreateCandleWithDuration(ticker, ticker.ProductCode, duration)
