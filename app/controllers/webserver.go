@@ -13,7 +13,7 @@ import (
 	"gotrading/config"
 )
 
-var templates = template.Must(template.ParseFiles("app/views/google.html"))
+var templates = template.Must(template.ParseFiles("app/views/chart.html"))
 
 // func init() {
 // 	fmt.Printf("Templates loaded: %+v\n", templates)
@@ -22,24 +22,8 @@ var templates = template.Must(template.ParseFiles("app/views/google.html"))
 // Templates loaded: &{escapeErr:<nil> text:0xc000226480 Tree:0xc00023ec60 nameSpace:0xc000228300}
 
 func viewChartHandler(w http.ResponseWriter, r *http.Request) {
-	limit := 100
-	duration := "1m"
-	durationTime := config.Config.Durations[duration]
-	df, err := models.GetAllCandle(config.Config.ProductCode, durationTime, limit)
 
-	// エラーハンドリングを追加
-	if err != nil {
-		http.Error(w, fmt.Sprintf("Database error: %v", err), http.StatusInternalServerError)
-		return
-	}
-
-	// データが空の場合の処理
-	if df == nil || len(df.Candles) == 0 {
-		http.Error(w, "No data available. Please wait for data collection.", http.StatusServiceUnavailable)
-		return
-	}
-
-	err = templates.ExecuteTemplate(w, "google.html", df.Candles)
+	err := templates.ExecuteTemplate(w, "chart.html", nil)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
@@ -102,6 +86,7 @@ func apiCandleHandler(w http.ResponseWriter, r *http.Request) {
 
 func StartWebServer() error {
 	http.HandleFunc("/api/candle/", apiMakeHandler(apiCandleHandler))
+	http.HandleFunc("/chart", viewChartHandler)
 	http.HandleFunc("/debug/", debugDataHandler) // 追加
 	return http.ListenAndServe(fmt.Sprintf(":%d", config.Config.Port), nil)
 	//dに8080を代入するという意味
