@@ -90,6 +90,16 @@
           value: [],
           down: 30,
         },
+        macd: {
+          enable: false,
+          indexes: [],
+          fastPeriod: 12,
+          slowPeriod: 26,
+          signalPeriod: 9,
+          macd: [],
+          signal: [],
+          hist: [],
+        },
       };
 
       function initConfigValues() {
@@ -110,6 +120,10 @@
         config.ichimoku.chikou = [];
         config.volume.index = [];
         config.rsi.indexes = { up: 0, values: 0, down: 0 };
+        config.macd.indexes = [];
+        config.macd.macd = [];
+        config.macd.signal = [];
+        config.macd.hist = [];
       }
 
       function drawChart(dataTable) {
@@ -277,6 +291,44 @@
           charts.push(rsiChart);
         }
 
+        if (config.macd.enable === true) {
+          if ($("#macd_div").length === 0) {
+            $("#tecnical_div").append(
+              '<div id="macd_div">' +
+                '<div class="tecnical_title">MACD</div>' +
+                '<div id="macd_chart"></div>' +
+                "</div>"
+            );
+          }
+          var macdColums = [{ type: "string" }];
+
+          macdColums.push(config.candlestick.numViews + config.macd.indexes[2]);
+          macdColums.push(config.candlestick.numViews + config.macd.indexes[0]);
+          macdColums.push(config.candlestick.numViews + config.macd.indexes[1]);
+          var macdChart = new google.visualization.ChartWrapper({
+            chartType: "ComboChart",
+            containerId: "macd_chart",
+            options: {
+              legend: { position: "none" },
+              seriesType: "cacd_chart",
+              series: {
+                1: {
+                  type: "line",
+                  lineWidth: 1,
+                },
+                2: {
+                  type: "line",
+                  lineWidth: 1,
+                },
+              },
+            },
+            view: {
+              columns: macdColums,
+            },
+          });
+          charts.push(macdChart);
+        }
+
         var controlWrapper = new google.visualization.ControlWrapper({
           controlType: "ChartRangeFilter",
           containerId: "filter_div",
@@ -336,6 +388,13 @@
         if (config.rsi.enable === true) {
           params["rsi"] = true;
           params["rsiPeriod"] = config.rsi.period;
+        }
+
+        if (config.macd.enable === true) {
+          params["macd"] = true;
+          params["macdFastPeriod"] = config.macd.fastPeriod;
+          params["macdSlowPeriod"] = config.macd.slowPeriod;
+          params["macdSignalPeriod"] = config.macd.signalPeriod;
         }
 
         $.get("/api/candle/", params).done(function (data) {
@@ -513,6 +572,23 @@
             dataTable.addColumn("number", "RSI Down");
           }
 
+          if (data["macd"] != undefined) {
+            config.dataTable.index += 1;
+            config.macd.indexes[0] = config.dataTable.index;
+            config.dataTable.index += 1;
+            config.macd.indexes[1] = config.dataTable.index;
+            config.dataTable.index += 1;
+            config.macd.indexes[2] = config.dataTable.index;
+
+            config.macd.macd = data["macd"]["macd"];
+            config.macd.signal = data["macd"]["macd_signal"];
+            config.macd.hist = data["macd"]["macd_hist"];
+
+            dataTable.addColumn("number", "MACD");
+            dataTable.addColumn("number", "MACD Signal");
+            dataTable.addColumn("number", "MACD Histogram");
+          }
+
           var googleChartData = [];
           var candles = data["candles"];
           for (var i = 0; i < candles.length; i++) {
@@ -600,6 +676,24 @@
                 datas.push(config.rsi.value[i]);
               }
               datas.push(config.rsi.down);
+            }
+
+            if (data["macd"] != undefined) {
+              if (config.macd.macd[i] == 0) {
+                datas.push(null);
+              } else {
+                datas.push(config.macd.macd[i]);
+              }
+              if (config.macd.signal[i] == 0) {
+                datas.push(null);
+              } else {
+                datas.push(config.macd.signal[i]);
+              }
+              if (config.macd.hist[i] == 0) {
+                datas.push(null);
+              } else {
+                datas.push(config.macd.hist[i]);
+              }
             }
 
             googleChartData.push(datas);
@@ -712,6 +806,27 @@
           config.rsi.period = parseInt(this.value);
           send();
         });
+        $("#inputMacd").change(function () {
+          if (this.checked === true) {
+            config.macd.enable = true;
+          } else {
+            config.macd.enable = false;
+            $("#macd_div").remove();
+          }
+          send();
+        });
+        $("#inputMacdFast").change(function () {
+          config.macd.fastPeriod = parseInt(this.value);
+          send();
+        });
+        $("#inputMacdSlow").change(function () {
+          config.macd.slowPeriod = parseInt(this.value);
+          send();
+        });
+        $("#inputMacdSignal").change(function () {
+          config.macd.signalPeriod = parseInt(this.value);
+          send();
+        });
       };
     </script>
     <script
@@ -811,6 +926,27 @@
         type="text"
         value="14"
         style="width: 15px"
+      />
+    </div>
+
+    <div>
+      MACD <input id="inputMacd" type="checkbox" /> Fast<input
+        id="inputMacdFast"
+        type="text"
+        value="12"
+        style="width: 20px"
+      />
+      Slow<input
+        id="inputMacdSlow"
+        type="text"
+        value="26"
+        style="width: 20px"
+      />
+      Signal<input
+        id="inputMacdSignal"
+        type="text"
+        value="9"
+        style="width: 20px"
       />
     </div>
 
