@@ -113,6 +113,21 @@ func apiCandleHandler(w http.ResponseWriter, r *http.Request) {
 		df.AddEma(period3)
 	}
 
+	bbands := r.URL.Query().Get("bbands")
+	if bbands != "" {
+		strBbandsN := r.URL.Query().Get("bbandsN")
+		strBbandsK := r.URL.Query().Get("bbandsK")
+		n, err := strconv.Atoi(strBbandsN)
+		if strBbandsN == "" || err != nil || n < 0 {
+			n = 20
+		}
+		k, err := strconv.ParseFloat(strBbandsK, 64)
+		if strBbandsK == "" || err != nil || k < 0 {
+			k = 2.0
+		}
+		df.AddBBands(n, k)
+	}
+
 	js, err := json.Marshal(df)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
