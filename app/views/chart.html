@@ -15,6 +15,13 @@
       #filter_div {
         height: 50px;
       }
+      .tecnical_title {
+        margin: 10px;
+        color: gray;
+      }
+      .bottom_chart {
+        border-bottom: 1px solid #ccc;
+      }
     </style>
 
     <script
@@ -70,6 +77,11 @@
           senkouB: [],
           chikou: [],
         },
+        volume: {
+          enable: false,
+          index: [],
+          values: [],
+        },
       };
 
       function initConfigValues() {
@@ -88,6 +100,7 @@
         config.ichimoku.senkouA = [];
         config.ichimoku.senkouB = [];
         config.ichimoku.chikou = [];
+        config.volume.index = [];
       }
 
       function drawChart(dataTable) {
@@ -188,6 +201,35 @@
           }
         }
 
+        if (config.volume.enable) {
+          if ($("#volume_div").length === 0) {
+            $("#tecnical_div").append(
+              '<div id="volume_div" class="bottom_chart">' +
+                '<div class="tecnical_title">Volume</div>' +
+                '<div id="volume_chart"></div>' +
+                "</div>"
+            );
+          }
+          var volumeChart = new google.visualization.ChartWrapper({
+            chartType: "ColumnChart",
+            containerId: "volume_chart",
+            options: {
+              hAxis: { slantedText: false },
+              legend: { position: "none" },
+              series: {},
+            },
+            view: {
+              columns: [
+                {
+                  type: "string",
+                },
+                5,
+              ],
+            },
+          });
+          charts.push(volumeChart);
+        }
+
         var controlWrapper = new google.visualization.ControlWrapper({
           controlType: "ChartRangeFilter",
           containerId: "filter_div",
@@ -240,6 +282,10 @@
           params["ichimoku"] = true;
         }
 
+        if (config.volume.enable === true) {
+          params["volume"] = true;
+        }
+
         $.get("/api/candle/", params).done(function (data) {
           //GET /api/candle/?product_code=BTC_JPY&limit=365&duration=1m
           // &sma=true&smaPeriod1=7&smaPeriod2=14&smaPeriod3=50
@@ -280,6 +326,7 @@
           //   */
           // });
           //みたいなものが返ってくる
+
           initConfigValues();
           var dataTable = new google.visualization.DataTable();
           dataTable.addColumn("date", "Date");
@@ -565,6 +612,15 @@
           }
           send();
         });
+        $("#inputVolume").change(function () {
+          if (this.checked === true) {
+            config.volume.enable = true;
+          } else {
+            config.volume.enable = false;
+            $("#volume_div").remove();
+          }
+          send();
+        });
       };
     </script>
     <script
@@ -656,8 +712,11 @@
 
     <div>Ichimoku <input id="inputIchimoku" type="checkbox" /></div>
 
+    <div>Volume<input id="inputVolume" type="checkbox" /></div>
+
     <div id="dashboard_div">
       <div id="chart_div"></div>
+      <div id="tecnical_div"></div>
       <div id="filter_div"></div>
     </div>
   </body>
