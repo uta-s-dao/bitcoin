@@ -82,6 +82,14 @@
           index: [],
           values: [],
         },
+        rsi: {
+          enable: false,
+          indexes: { up: 0, values: 0, down: 0 },
+          period: 14,
+          up: 70,
+          value: [],
+          down: 30,
+        },
       };
 
       function initConfigValues() {
@@ -101,6 +109,7 @@
         config.ichimoku.senkouB = [];
         config.ichimoku.chikou = [];
         config.volume.index = [];
+        config.rsi.indexes = { up: 0, values: 0, down: 0 };
       }
 
       function drawChart(dataTable) {
@@ -230,6 +239,44 @@
           charts.push(volumeChart);
         }
 
+        if (config.rsi.enable === true) {
+          if ($("#rsi_div").length === 0) {
+            $("#tecnical_div").append(
+              '<div id="rsi_div" class="bottom_chart">' +
+                '<div class="tecnical_title">RSI</div>' +
+                '<div id="rsi_chart"></div>' +
+                "</div>"
+            );
+          }
+          var up = config.candlestick.numViews + config.rsi.indexes["up"];
+          var value = config.candlestick.numViews + config.rsi.indexes["value"];
+          var down = config.candlestick.numViews + config.rsi.indexes["down"];
+          var rsiChart = new google.visualization.ChartWrapper({
+            chartType: "LineChart",
+            containerId: "rsi_chart",
+            options: {
+              hAxis: { slantedText: false },
+              legend: { position: "none" },
+              series: {
+                [up]: { color: "black", lineWidth: 1 },
+                [value]: { color: "#e2431e", lineWidth: 1 },
+                [down]: { color: "black", lineWidth: 1 },
+              },
+            },
+            view: {
+              columns: [
+                {
+                  type: "string",
+                },
+                up,
+                value,
+                down,
+              ],
+            },
+          });
+          charts.push(rsiChart);
+        }
+
         var controlWrapper = new google.visualization.ControlWrapper({
           controlType: "ChartRangeFilter",
           containerId: "filter_div",
@@ -284,6 +331,11 @@
 
         if (config.volume.enable === true) {
           params["volume"] = true;
+        }
+
+        if (config.rsi.enable === true) {
+          params["rsi"] = true;
+          params["rsiPeriod"] = config.rsi.period;
         }
 
         $.get("/api/candle/", params).done(function (data) {
@@ -445,6 +497,22 @@
             dataTable.addColumn("number", "Chikou");
           }
 
+          if (data["rsi"] != undefined) {
+            config.dataTable.index += 1;
+            config.rsi.indexes["up"] = config.dataTable.index;
+            config.dataTable.index += 1;
+            config.rsi.indexes["value"] = config.dataTable.index;
+            config.dataTable.index += 1;
+            config.rsi.indexes["down"] = config.dataTable.index;
+
+            config.rsi.period = data["rsi"]["period"];
+            config.rsi.value = data["rsi"]["values"];
+
+            dataTable.addColumn("number", "RSI Thread");
+            dataTable.addColumn("number", "RSI (" + config.rsi.period + ")");
+            dataTable.addColumn("number", "RSI Down");
+          }
+
           var googleChartData = [];
           var candles = data["candles"];
           for (var i = 0; i < candles.length; i++) {
@@ -522,6 +590,16 @@
               } else {
                 datas.push(config.ichimoku.chikou[i]);
               }
+            }
+
+            if (data["rsi"] != undefined) {
+              datas.push(config.rsi.up);
+              if (config.rsi.value[i] == 0) {
+                datas.push(null);
+              } else {
+                datas.push(config.rsi.value[i]);
+              }
+              datas.push(config.rsi.down);
             }
 
             googleChartData.push(datas);
@@ -621,6 +699,19 @@
           }
           send();
         });
+        $("#inputRsi").change(function () {
+          if (this.checked === true) {
+            config.rsi.enable = true;
+          } else {
+            config.rsi.enable = false;
+            $("#rsi_div").remove();
+          }
+          send();
+        });
+        $("#inputRsiPeriod").change(function () {
+          config.rsi.period = parseInt(this.value);
+          send();
+        });
       };
     </script>
     <script
@@ -713,6 +804,15 @@
     <div>Ichimoku <input id="inputIchimoku" type="checkbox" /></div>
 
     <div>Volume<input id="inputVolume" type="checkbox" /></div>
+
+    <div>
+      RSI <input id="inputRsi" type="checkbox" /> Period<input
+        id="inputRsiPeriod"
+        type="text"
+        value="14"
+        style="width: 15px"
+      />
+    </div>
 
     <div id="dashboard_div">
       <div id="chart_div"></div>
