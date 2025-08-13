@@ -100,12 +100,6 @@
           signal: [],
           hist: [],
         },
-        hv: {
-          enable: false,
-          indexes: [],
-          periods: [21, 63, 252],
-          values: [],
-        },
       };
 
       function initConfigValues() {
@@ -130,8 +124,6 @@
         config.macd.macd = [];
         config.macd.signal = [];
         config.macd.hist = [];
-        config.hv.indexes = [];
-        config.hv.values = [];
       }
 
       function drawChart(dataTable) {
@@ -337,38 +329,6 @@
           charts.push(macdChart);
         }
 
-        if (config.hv.enable === true) {
-          if ($("#hv_div").length === 0) {
-            $("#tecnical_div").append(
-              '<div id="hv_div" class="bottom_chart">' +
-                '<div class="tecnical_title">Historical Volatility</div>' +
-                '<div id="hv_chart"></div>' +
-                "</div>"
-            );
-          }
-          var hvColumns = [{ type: "string" }];
-          for (i = 0; i < config.hv.indexes.length; i++) {
-            hvColumns.push(config.candlestick.numViews + config.hv.indexes[i]);
-          }
-          var hvChart = new google.visualization.ChartWrapper({
-            chartType: "LineChart",
-            containerId: "hv_chart",
-            options: {
-              hAxis: { slantedText: false },
-              legend: { position: "none" },
-              series: {
-                0: { color: "#e74c3c", lineWidth: 1 },
-                1: { color: "#3498db", lineWidth: 1 },
-                2: { color: "#2ecc71", lineWidth: 1 },
-              },
-            },
-            view: {
-              columns: hvColumns,
-            },
-          });
-          charts.push(hvChart);
-        }
-
         var controlWrapper = new google.visualization.ControlWrapper({
           controlType: "ChartRangeFilter",
           containerId: "filter_div",
@@ -435,13 +395,6 @@
           params["macdFastPeriod"] = config.macd.fastPeriod;
           params["macdSlowPeriod"] = config.macd.slowPeriod;
           params["macdSignalPeriod"] = config.macd.signalPeriod;
-        }
-
-        if (config.hv.enable === true) {
-          params["hv"] = true;
-          params["hvPeriod1"] = config.hv.periods[0];
-          params["hvPeriod2"] = config.hv.periods[1];
-          params["hvPeriod3"] = config.hv.periods[2];
         }
 
         $.get("/api/candle/", params).done(function (data) {
@@ -636,24 +589,6 @@
             dataTable.addColumn("number", "MACD Histogram");
           }
 
-          if (data["hvs"] != undefined) {
-            for (i = 0; i < data["hvs"].length; i++) {
-              var hvData = data["hvs"][i];
-              if (hvData.values && hvData.values.length == 0) {
-                continue;
-              }
-              config.dataTable.index += 1;
-              config.hv.indexes[i] = config.dataTable.index;
-              dataTable.addColumn(
-                "number",
-                "HV" + hvData["period"].toString()
-              );
-              config.hv.values[i] = hvData["values"];
-            }
-          } else {
-            console.log("No HV data in response");
-          }
-
           var googleChartData = [];
           var candles = data["candles"];
           for (var i = 0; i < candles.length; i++) {
@@ -758,16 +693,6 @@
                 datas.push(null);
               } else {
                 datas.push(config.macd.hist[i]);
-              }
-            }
-
-            if (data["hvs"] != undefined) {
-              for (j = 0; j < config.hv.values.length; j++) {
-                if (config.hv.values[j][i] == 0) {
-                  datas.push(null);
-                } else {
-                  datas.push(config.hv.values[j][i]);
-                }
               }
             }
 
@@ -902,27 +827,6 @@
           config.macd.signalPeriod = parseInt(this.value);
           send();
         });
-        $("#inputHv").change(function () {
-          if (this.checked === true) {
-            config.hv.enable = true;
-          } else {
-            config.hv.enable = false;
-            $("#hv_div").remove();
-          }
-          send();
-        });
-        $("#inputHvPeriod1").change(function () {
-          config.hv.periods[0] = parseInt(this.value);
-          send();
-        });
-        $("#inputHvPeriod2").change(function () {
-          config.hv.periods[1] = parseInt(this.value);
-          send();
-        });
-        $("#inputHvPeriod3").change(function () {
-          config.hv.periods[2] = parseInt(this.value);
-          send();
-        });
       };
     </script>
     <script
@@ -1044,17 +948,6 @@
         value="9"
         style="width: 20px"
       />
-    </div>
-
-    <div>
-      HV <input id="inputHv" type="checkbox" /> Period<input
-        id="inputHvPeriod1"
-        type="text"
-        value="21"
-        style="width: 20px"
-      />
-      <input id="inputHvPeriod2" type="text" value="63" style="width: 20px" />
-      <input id="inputHvPeriod3" type="text" value="252" style="width: 20px" />
     </div>
 
     <div id="dashboard_div">
