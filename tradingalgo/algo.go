@@ -1,5 +1,10 @@
 package tradingalgo
 
+import (
+	"github.com/markcheno/go-talib"
+	"math"
+)
+
 /*
 Tenkan = (9-period high + 9-period low) / 2
 Kijun = (26-period high + 26-period low) / 2
@@ -43,28 +48,42 @@ func IchimokuCloud(inReal []float64) ([]float64, []float64, []float64, []float64
 			min, max := minMax(inReal[i-8 : i+1])
 			tenkan[i] = (min + max) / 2
 		}
-		
+
 		// Kijun-sen (26-period)
 		if i >= 25 {
 			min, max := minMax(inReal[i-25 : i+1])
 			kijun[i] = (min + max) / 2
 		}
-		
+
 		// Senkou Span A (Tenkan + Kijun) / 2
 		if i >= 25 {
 			senkouA[i] = (tenkan[i] + kijun[i]) / 2
 		}
-		
+
 		// Senkou Span B (52-period)
 		if i >= 51 {
 			min, max := minMax(inReal[i-51 : i+1])
 			senkouB[i] = (min + max) / 2
 		}
-		
+
 		// Chikou Span (current close shifted back 26 periods)
 		if i >= 25 {
 			chikou[i-25] = inReal[i]
 		}
 	}
 	return tenkan, kijun, senkouA, senkouB, chikou
+}
+
+func Hv(inReal []float64, inTimePeriod int) []float64 {
+	change := make([]float64, 0)
+	for i := range inReal {
+		if i == 0 {
+			continue
+		}
+		dayChange := math.Log(
+			float64(inReal[i]) / float64(inReal[i-1]))
+		change = append(change, dayChange)
+
+	}
+	return talib.StdDev(change, inTimePeriod, math.Sqrt(1)*100)
 }
