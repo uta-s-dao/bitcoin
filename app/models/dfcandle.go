@@ -1,10 +1,11 @@
 package models
 
 import (
-	"gotrading/tradingalgo"
 	"time"
 
 	"github.com/markcheno/go-talib"
+
+	"gotrading/tradingalgo"
 )
 
 type DataFrameCandle struct {
@@ -18,6 +19,7 @@ type DataFrameCandle struct {
 	Rsi           *Rsi           `json:"rsi,omitempty"`
 	Macd          *Macd          `json:"macd,omitempty"`
 	Hvs           []Hv           `json:"hvs,omitempty"`
+	Events        *SignalEvents  `json:"events,omitempty"`
 }
 
 type Sma struct {
@@ -35,14 +37,14 @@ type BBands struct {
 	K    float64   `json:"k,omitempty"`
 	Up   []float64 `json:"up,omitempty"`
 	Mid  []float64 `json:"mid,omitempty"`
-	Down []float64 `json:"low,omitempty"`
+	Down []float64 `json:"down,omitempty"`
 }
 
 type IchimokuCloud struct {
 	Tenkan  []float64 `json:"tenkan,omitempty"`
 	Kijun   []float64 `json:"kijun,omitempty"`
-	SenkouA []float64 `json:"senkou_a,omitempty"`
-	SenkouB []float64 `json:"senkou_b,omitempty"`
+	SenkouA []float64 `json:"senkoua,omitempty"`
+	SenkouB []float64 `json:"senkoub,omitempty"`
 	Chikou  []float64 `json:"chikou,omitempty"`
 }
 
@@ -136,7 +138,7 @@ func (df *DataFrameCandle) AddEma(period int) bool {
 }
 
 func (df *DataFrameCandle) AddBBands(n int, k float64) bool {
-	if len(df.Candles) > n {
+	if n <= len(df.Closes()) {
 		up, mid, down := talib.BBands(df.Closes(), n, k, k, 0)
 		df.BBands = &BBands{
 			N:    n,
@@ -152,7 +154,7 @@ func (df *DataFrameCandle) AddBBands(n int, k float64) bool {
 
 func (df *DataFrameCandle) AddIchimokuCloud() bool {
 	tenkanN := 9
-	if len(df.Candles) > tenkanN {
+	if len(df.Closes()) >= tenkanN {
 		tenkan, kijun, senkouA, senkouB, chikou := tradingalgo.IchimokuCloud(df.Closes())
 		df.IchimokuCloud = &IchimokuCloud{
 			Tenkan:  tenkan,
@@ -168,10 +170,9 @@ func (df *DataFrameCandle) AddIchimokuCloud() bool {
 
 func (df *DataFrameCandle) AddRsi(period int) bool {
 	if len(df.Candles) > period {
-		values := talib.Rsi(df.Closes(), period)
 		df.Rsi = &Rsi{
 			Period: period,
-			Values: values,
+			Values: talib.Rsi(df.Closes(), period),
 		}
 		return true
 	}
@@ -192,15 +193,23 @@ func (df *DataFrameCandle) AddMacd(inFastPeriod, inSlowPeriod, inSignalPeriod in
 		return true
 	}
 	return false
-
 }
 
 func (df *DataFrameCandle) AddHv(period int) bool {
-	if len(df.Candles) > period {
+	if len(df.Candles) >= period {
 		df.Hvs = append(df.Hvs, Hv{
 			Period: period,
 			Values: tradingalgo.Hv(df.Closes(), period),
 		})
+		return true
+	}
+	return false
+}
+
+func (df *DataFrameCandle) AddEvents(timeTime time.Time) bool {
+	signalEvents := GetSignalEventsAfterTime(timeTime)
+	if len(signalEvents.Signals) > 0 {
+		df.Events = signalEvents
 		return true
 	}
 	return false
