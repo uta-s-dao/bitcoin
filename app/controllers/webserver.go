@@ -194,16 +194,19 @@ func apiCandleHandler(w http.ResponseWriter, r *http.Request) {
 	events := r.URL.Query().Get("events")
 	if events != "" {
 		if config.Config.BackTest {
+			// バックテスト時の処理
 			performance, p1, p2, p3 := df.OptimizeRsi()
 			log.Println(performance, p1, p2, p3)
 			if performance > 0 {
 				df.Events = df.BackTestRsi(p1, p2, p3)
 			}
 		} else {
+			// 通常時の処理
 			firstTime := df.Candles[0].Time
 			df.AddEvents(firstTime)
 		}
 	}
+	// 構造体をjsonに変換する
 	js, err := json.Marshal(df)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

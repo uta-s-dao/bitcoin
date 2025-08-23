@@ -171,6 +171,8 @@ func (s *SignalEvents) Profit() float64 {
 	return total
 }
 
+// JSONに変換する際にProfitも含める。
+// インターフェースで指定したメソッドを必ず持ってくださいというときに使う
 func (s SignalEvents) MarshalJSON() ([]byte, error) {
 	value, err := json.Marshal(&struct {
 		Signals []SignalEvent `json:"signals,omitempty"`
