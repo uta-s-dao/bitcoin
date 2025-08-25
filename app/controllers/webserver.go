@@ -211,6 +211,7 @@ func apiCandleHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write(js)
 }
 
+// ルートを登録した後。すぐにListenAndServeを実行して関数を終了。サーバー自体はListenAndServeが引き継いで動作継続
 func StartWebServer() error {
 	http.HandleFunc("/api/candle/", apiMakeHandler(apiCandleHandler))
 	http.HandleFunc("/chart/", viewChartHandler)

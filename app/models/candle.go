@@ -3,6 +3,7 @@ package models
 import (
 	"fmt"
 	"gotrading/bitflyer"
+	"log"
 	"time"
 )
 
@@ -65,11 +66,13 @@ func GetCandle(productCode string, duration time.Duration, dateTime time.Time) *
 }
 
 func CreateCandleWithDuration(ticker bitflyer.Ticker, productCode string, duration time.Duration) bool {
-	currentCandle := GetCandle(productCode, duration, ticker.TruncateDateTime(duration))
+	//DBから取得
+	currentCandle := GetCandle(productCode, duration, ticker.TruncateDateTime(duration)) //例えば1時間足なら「14:23:45」→「14:00:00」
 	price := ticker.GetMidPrice()
 	if currentCandle == nil {
 		candle := NewCandle(productCode, duration, ticker.TruncateDateTime(duration),
 			price, price, price, price, ticker.Volume)
+		//DBに保存
 		candle.Create()
 		return true
 	}
@@ -100,16 +103,21 @@ func GetAllCandle(productCode string, duration time.Duration, limit int) (dfCand
 	dfCandle = &DataFrameCandle{}
 	dfCandle.ProductCode = productCode
 	dfCandle.Duration = duration
+	//カーソルを次の行に移動させる関数
 	for rows.Next() {
 		var candle Candle
 		candle.ProductCode = productCode
 		candle.Duration = duration
+		//順番を対応させなければならない
+		//SELECT time, open, close, high, low, volume FROM table
+		//       1     2     3      4     5    6
 		rows.Scan(&candle.Time, &candle.Open, &candle.Close, &candle.High, &candle.Low, &candle.Volume)
+		//        1番目　　　　　2番目          3番目          4番目          5番目        6番目
 		dfCandle.Candles = append(dfCandle.Candles, candle)
 	}
 	err = rows.Err()
 	if err != nil {
-		return
+		log.Printf("Database error: %v", err)
 	}
 	return dfCandle, nil
 }

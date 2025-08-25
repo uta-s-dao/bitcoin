@@ -26,7 +26,10 @@ type ConfigList struct {
 	NumRanking       int
 }
 
+// グローバル変数
 var Config ConfigList
+
+// main.goでpackage configをimportしたときに実行される関数。go run main.goで一回だけ実行される
 
 func init() {
 	cfg, err := ini.Load("config.ini")

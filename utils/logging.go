@@ -10,7 +10,7 @@ func LoggingSettings(logFile string) {
 	logfile, err := os.OpenFile(logFile, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 	// ファイルがない場合は作る
 	// ファイルがあれば追記する
-	//書き込み専用でオープン
+	// 書き込み専用でオープン
 	if err != nil {
 		log.Fatalf("file=logFile err=%s", err.Error())
 	}

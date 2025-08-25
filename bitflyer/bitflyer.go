@@ -211,6 +211,7 @@ func (api *APIClient) GetRealTimeTicker(symbol string, ch chan<- Ticker) {
 	u := url.URL{Scheme: "wss", Host: "ws.lightstream.bitflyer.com", Path: "/json-rpc"}
 	log.Printf("connecting to %s", u.String())
 
+	//WebSocket接続を確立
 	c, _, err := websocket.DefaultDialer.Dial(u.String(), nil)
 	if err != nil {
 		log.Fatal("dial:", err)
@@ -218,6 +219,7 @@ func (api *APIClient) GetRealTimeTicker(symbol string, ch chan<- Ticker) {
 	defer c.Close()
 
 	channel := fmt.Sprintf("lightning_ticker_%s", symbol)
+	//bitFlyerのWebSocket APIが採用している通信プロトコルのJSON-RPC 2.0形式でsubscribeリクエストを送信
 	if err := c.WriteJSON(&JsonRPC2{Version: "2.0", Method: "subscribe", Params: &SubscribeParams{channel}}); err != nil {
 		log.Fatal("subscribe:", err)
 		return
@@ -225,7 +227,9 @@ func (api *APIClient) GetRealTimeTicker(symbol string, ch chan<- Ticker) {
 
 OUTER:
 	for {
+		//空のJsonRPC2構造体のメモリ領域を確保
 		message := new(JsonRPC2)
+		//WebSocket接続 c からJSONデータを読み取り
 		if err := c.ReadJSON(message); err != nil {
 			log.Println("read:", err)
 			return

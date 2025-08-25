@@ -44,22 +44,22 @@ func NewAI(productCode string, duration time.Duration, pastPeriod int, UsePercen
 	apiClient := bitflyer.New(config.Config.ApiKey, config.Config.ApiSecret)
 	var signalEvents *models.SignalEvents
 	if backTest {
-		signalEvents = models.NewSignalEvents()
+		signalEvents = models.NewSignalEvents() //空のものを入れる
 	} else {
-		signalEvents = models.GetSignalEventsByCount(1)
+		signalEvents = models.GetSignalEventsByCount(1) //DBから最新のものを1件だけ取ってくる
 	}
 	codes := strings.Split(productCode, "_")
 	Ai = &AI{
 		API:              apiClient,
 		ProductCode:      productCode,
-		CoinCode:         codes[0],
-		CurrencyCode:     codes[1],
+		CoinCode:         codes[0], //BTC
+		CurrencyCode:     codes[1], //JPY
 		UsePercent:       UsePercent,
 		MinuteToExpires:  1,
 		PastPeriod:       pastPeriod,
 		Duration:         duration,
 		SignalEvents:     signalEvents,
-		TradeSemaphore:   semaphore.NewWeighted(1),
+		TradeSemaphore:   semaphore.NewWeighted(1), //AIがtradeしてるときはgorutineはできない
 		BackTest:         backTest,
 		StartTrade:       time.Now().UTC(),
 		StopLimitPercent: stopLimitPercent,
@@ -73,12 +73,14 @@ func (ai *AI) UpdateOptimizeParams(isContinue bool) {
 	ai.OptimizedTradeParams = df.OptimizeParams()
 	log.Printf("optimized_trade_params=%+v", ai.OptimizedTradeParams)
 	if ai.OptimizedTradeParams == nil && isContinue && !ai.BackTest {
+		//                        市場異常時、データ不足時
 		log.Print("status_no_params")
 		time.Sleep(10 * ai.Duration)
 		ai.UpdateOptimizeParams(isContinue)
 	}
 }
 
+// bitflyerの注文するとchildOrderAcceptanceIDとisOrderCompletedが返ってくる
 func (ai *AI) Buy(candle models.Candle) (childOrderAcceptanceID string, isOrderCompleted bool) {
 	if ai.BackTest {
 		couldBuy := ai.SignalEvents.Buy(ai.ProductCode, candle.Time, candle.Close, 1.0, false)
