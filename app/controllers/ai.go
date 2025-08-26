@@ -16,7 +16,7 @@ import (
 )
 
 const (
-	ApiFeePercent = 0.0012
+	ApiFeePercent = 0.0015 // bitflyerの手数料0.15%
 )
 
 type AI struct {
@@ -72,7 +72,7 @@ func (ai *AI) UpdateOptimizeParams(isContinue bool) {
 	df, _ := models.GetAllCandle(ai.ProductCode, ai.Duration, ai.PastPeriod)
 	ai.OptimizedTradeParams = df.OptimizeParams()
 	log.Printf("optimized_trade_params=%+v", ai.OptimizedTradeParams)
-	if ai.OptimizedTradeParams == nil && isContinue && !ai.BackTest {
+	if ai.OptimizedTradeParams == nil && !isContinue && !ai.BackTest {
 		//                        市場異常時、データ不足時
 		log.Print("status_no_params")
 		time.Sleep(10 * ai.Duration)
@@ -304,7 +304,10 @@ func (ai *AI) GetAvailableBalance() (availableCurrency, availableCoin float64) {
 func (ai *AI) AdjustSize(size float64) float64 {
 	fee := size * ApiFeePercent
 	size = size - fee
-	return math.Floor(size*10000) / 10000
+	// 売買するビットコインの最小単位を小数点以下6桁に調整
+	// 0.123456789 → 0.123456
+	// 2025/8/27 時点では16,387,528円なので、0.000001BTC=16円
+	return math.Floor(size*1000000) / 1000000
 }
 
 func (ai *AI) WaitUntilOrderComplete(childOrderAcceptanceID string, executeTime time.Time) bool {
