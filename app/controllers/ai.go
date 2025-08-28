@@ -72,7 +72,7 @@ func (ai *AI) UpdateOptimizeParams(isContinue bool) {
 	df, _ := models.GetAllCandle(ai.ProductCode, ai.Duration, ai.PastPeriod)
 	ai.OptimizedTradeParams = df.OptimizeParams()
 	log.Printf("optimized_trade_params=%+v", ai.OptimizedTradeParams)
-	if ai.OptimizedTradeParams == nil && !isContinue && !ai.BackTest {
+	if ai.OptimizedTradeParams == nil && isContinue && !ai.BackTest {
 		//                        市場異常時、データ不足時
 		log.Print("status_no_params")
 		time.Sleep(10 * ai.Duration)
@@ -214,6 +214,7 @@ func (ai *AI) Trade() {
 	for i := 1; i < lenCandles; i++ {
 		buyPoint, sellPoint := 0, 0
 		if params.EmaEnable && params.EmaPeriod1 <= i && params.EmaPeriod2 <= i {
+			//emaのゴールデンクロス、デッドクロス
 			if emaValues1[i-1] < emaValues2[i-1] && emaValues1[i] >= emaValues2[i] {
 				buyPoint++
 			}
