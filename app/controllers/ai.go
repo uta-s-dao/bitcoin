@@ -180,6 +180,7 @@ func (ai *AI) Trade() {
 	if params == nil {
 		return
 	}
+	log.Println("trade_params=", params)
 	df, _ := models.GetAllCandle(ai.ProductCode, ai.Duration, ai.PastPeriod)
 	lenCandles := len(df.Candles)
 
@@ -268,7 +269,7 @@ func (ai *AI) Trade() {
 			}
 		}
 
-		if buyPoint > 0 {
+		if buyPoint > 1 {
 			_, isOrderCompleted := ai.Buy(df.Candles[i])
 			if !isOrderCompleted {
 				continue
@@ -276,7 +277,7 @@ func (ai *AI) Trade() {
 			ai.StopLimit = df.Candles[i].Close * ai.StopLimitPercent
 		}
 
-		if sellPoint > 0 || ai.StopLimit > df.Candles[i].Close {
+		if sellPoint > 1 || ai.StopLimit > df.Candles[i].Close {
 			_, isOrderCompleted := ai.Sell(df.Candles[i])
 			if !isOrderCompleted {
 				continue
